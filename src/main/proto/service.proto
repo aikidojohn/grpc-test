@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+option java_package = "com.rtr.reco.carousel";
+option java_multiple_files = true;
+
+service CarouselService {
+	rpc getCarousels (CarouselRequest) returns (stream Carousel) {}
+	rpc getCarouselsSync (CarouselRequest) returns (CarouselResponse) {}
+}
+
+message CarouselResponse {
+	repeated Carousel carousels = 1;
+}
+message CarouselRequest {
+	int64 userId = 1;
+}
+
+message Carousel {
+	int64 id = 1;
+	string name = 2;
+	repeated string styles = 3;
+}
