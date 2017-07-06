@@ -4,19 +4,56 @@ option java_package = "com.rtr.reco.carousel";
 option java_multiple_files = true;
 
 service CarouselService {
-	rpc getCarousels (CarouselRequest) returns (stream Carousel) {}
-	rpc getCarouselsSync (CarouselRequest) returns (CarouselResponse) {}
+	rpc getCarouselsAsync (CarouselRequest) returns (stream Carousel) {}
+	rpc getCarousels (CarouselRequest) returns (CarouselResponse) {}
+	rpc getCarousel (SingleCarouselRequest) returns (CarouselResponse) {}
 }
 
 message CarouselResponse {
 	repeated Carousel carousels = 1;
 }
+
 message CarouselRequest {
-	int64 userId = 1;
+	//placeholder for data that might affect recos in some way
+	message Context {
+		UserOnboardingData onboarding = 1;
+		string deviceType = 2; //enum maybe?
+	}
+	
+	//int64 userId = 1; //required
+	User user = 1;
+	string browserId = 2;
+	Context context = 3;
+	repeated Carousel carouselsToOrder = 4; //optional
+}
+
+message SingleCarouselRequest {
+	int64 carouselId = 1; //required
+	int32 limit = 2;
+	int32 offset = 3;
 }
 
 message Carousel {
 	int64 id = 1;
 	string name = 2;
 	repeated string styles = 3;
+	
+	enum Type {
+		HEARTS = 1;
+		MODEL_GENERATED = 2;
+		NEW_ARRIVALS = 3;
+		PRODUCT_SPECIFIED = 4;
+		RECENTLY_VIEWED = 5;
+	}
+	Type type = 4;
+}
+
+message User {
+	int64 id = 1; //required
+	int32 weight = 2;
+	int32 heightInches = 3;
+	string bust = 4;
+}
+
+message UserOnboardingData {
 }
